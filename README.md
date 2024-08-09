@@ -102,7 +102,7 @@ To search through the uploaded documents based on a query, use the search_docume
 ```bash
 search_documents(stub, 'math', 4)
 ```
-In the context of vector-based search, k=4 refers to the number of most similar results (or "nearest neighbors") you want to retrieve from the database.
+In the context of vector-based search, k=4 refers to the number of most similar results (or "nearest neighbors") you want to retrieve from the database and the 'math' refers to the query.
 
 ### Running the Client Script
 
