@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package vector_database;
+
+// The VectorDatabase service definition.
+service VectorDatabase {
+    // Uploads a PDF document and processes it.
+    rpc UploadDocument (UploadDocumentRequest) returns (UploadDocumentResponse);
+
+    // Searches through documents based on a query.
+    rpc SearchDocuments (SearchDocumentsRequest) returns (SearchDocumentsResponse);
+
+    // Summarizes a text.
+    rpc SummarizeText (SummarizeTextRequest) returns (SummarizeTextResponse);
+}
+
+// The request message containing the PDF document.
+message UploadDocumentRequest {
+    bytes pdf_data = 1;
+    string file_name = 2;
+}
+
+// The response message for UploadDocument.
+message UploadDocumentResponse {
+    string message = 1;
+}
+
+// The request message containing the search query.
+message SearchDocumentsRequest {
+    string query = 1;
+    int32 top_k = 2;
+}
+
+// The response message for SearchDocuments.
+message SearchDocumentsResponse {
+    repeated SearchResult results = 1;
+}
+
+// The message for a single search result.
+message SearchResult {
+    int32 document_index = 1;
+    int32 chunk_index = 2;
+    string chunk_text = 3;
+    string document_summary = 4;
+}
+
+// The request message for text summarization.
+message SummarizeTextRequest {
+    string text = 1;
+}
+
+// The response message for SummarizeText.
+message SummarizeTextResponse {
+    string summary = 1;
+}

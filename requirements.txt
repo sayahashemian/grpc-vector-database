@@ -1,0 +1,13 @@
+faiss-cpu==1.8.0.post1
+grpcio==1.51.1
+grpcio-tools==1.51.1
+numpy==1.26.4
+pandas==2.2.2
+protobuf==4.25.3
+PyMuPDF==1.24.9
+sentence-transformers==2.2.2
+spacy==3.6.0
+spacy-legacy==3.0.12
+spacy-loggers==1.0.4
+tokenizers==0.19.1
+transformers==4.44.0
