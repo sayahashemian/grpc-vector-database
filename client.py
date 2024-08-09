@@ -1,6 +1,18 @@
 import grpc
 import vector_database_pb2
 import vector_database_pb2_grpc
+import fitz 
+
+
+def extract_text_from_pdf(pdf_path):
+    """Extracts text from a PDF file."""
+    document = fitz.open(pdf_path)
+    text = ""
+    for page_num in range(len(document)):
+        page = document.load_page(page_num)
+        text += page.get_text()
+    return text
+
 
 def upload_document(stub, pdf_path, file_name):
     with open(pdf_path, "rb") as f:
@@ -28,15 +40,16 @@ def run():
 
         # Upload documents
         upload_document(stub, 'sample1.pdf', 'sample1.pdf')
-        #upload_document(stub, 'sample2.pdf', 'sample2.pdf')
+        upload_document(stub, 'sample2.pdf', 'sample2.pdf')
         #upload_document(stub, 'todotask.docx', 'todotask.docx' )
         
 
         # Search documents
-        search_documents(stub, 'math', -2)
+        search_documents(stub, 'math', 2)
+        pdf_text = extract_text_from_pdf('sample1.pdf')
 
         # Summarize text
-        summarize_text(stub, 'This is a long text that needs to be summarized.')
+        summarize_text(stub, pdf_text)
 
 if __name__ == '__main__':
     run()

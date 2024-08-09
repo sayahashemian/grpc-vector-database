@@ -10,6 +10,9 @@ import faiss
 import numpy as np
 import os
 
+
+
+
 # Initialize models
 nlp = spacy.load('en_core_web_sm')
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
@@ -30,18 +33,15 @@ class VectorDatabaseServicer(vector_database_pb2_grpc.VectorDatabaseServicer):
         try:
             global documents, vectors, summaries, chunk_indices
 
-            # Validate the file name
             if not request.file_name.endswith(".pdf"):
                 context.set_details("Invalid file format. Only PDF files are supported.")
                 context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
                 return vector_database_pb2.UploadDocumentResponse(message="Failed")
 
-            # Save the uploaded PDF data to a file
             pdf_path = request.file_name
             with open(pdf_path, "wb") as f:
                 f.write(request.pdf_data)
 
-            # Validate the content of the PDF
             text = extract_text_from_pdf(pdf_path)
             if not text.strip():
                 context.set_details("Empty or unreadable PDF content.")
@@ -50,16 +50,13 @@ class VectorDatabaseServicer(vector_database_pb2_grpc.VectorDatabaseServicer):
 
             preprocessed_text = preprocess_text(text)
 
-            # Chunk the preprocessed text
             chunks = chunk_text(preprocessed_text)
             doc_summaries = []
 
             for chunk_idx, chunk in enumerate(chunks):
-                # Summarize each chunk
                 summary = summarize_chunk(chunk)
                 doc_summaries.append(summary)
 
-                # Vectorize each chunk
                 vector = text_to_vector(chunk)
                 vectors.append(vector)
                 chunk_indices.append((len(documents), chunk_idx))  # (document_index, chunk_index)
@@ -67,7 +64,6 @@ class VectorDatabaseServicer(vector_database_pb2_grpc.VectorDatabaseServicer):
             documents.append(chunks)
             summaries.append(' '.join(doc_summaries))
 
-            # Add all vectors to the FAISS index at once
             add_vectors_to_index(vectors[-len(chunks):])
 
             return vector_database_pb2.UploadDocumentResponse(message="Document uploaded successfully")
